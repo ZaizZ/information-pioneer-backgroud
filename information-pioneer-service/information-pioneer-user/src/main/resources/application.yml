@@ -1,0 +1,34 @@
+server:
+  port: 9003
+spring:
+  application:
+    name: information-pioneer-user
+  datasource:
+    driver-class-name: com.mysql.jdbc.Driver
+    url: jdbc:mysql://192.168.181.132:3306/information_pioneer_user?useUnicode=true&characterEncoding=UTF-8&serverTimezone=UTC&useSSL=false
+    username: root
+    password: root
+  cloud:
+    nacos:
+      discovery:
+        server-addr: 192.168.181.132:8848
+mybatis-plus:
+  configuration:
+    # sql输出到控制台,方便开发调试
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+
+seata:
+  registry:
+    type: nacos
+    nacos:
+      server-addr: 192.168.181.132:8848
+      group: DEFAULT_GROUP
+      namespace: ""
+      application: seata-server
+      cluster: default
+  tx-service-group: information-pioneer-user-group # 事务组，考虑到你这个微服务可能会有集群部署，所以定义在同一个事务组里面
+  service:
+    vgroup-mapping:
+      information-pioneer-user-group: default   # 与上面想对应，属于哪个seata集群
+  data-source-proxy-mode: AT
+

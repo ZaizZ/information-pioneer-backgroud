@@ -1,0 +1,19 @@
+server:
+  port: 9002
+spring:
+  application:
+    name: information-pioneer-admin
+  datasource:
+    driver-class-name: com.mysql.jdbc.Driver
+    url: jdbc:mysql://192.168.181.132:3306/information_pioneer_admin?useUnicode=true&characterEncoding=UTF-8&serverTimezone=UTC&useSSL=false
+    username: root
+    password: root
+  cloud:
+    nacos:
+      discovery:
+        server-addr: 192.168.181.132:8848
+mybatis-plus:
+  configuration:
+    # sql输出到控制台,方便开发调试
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+

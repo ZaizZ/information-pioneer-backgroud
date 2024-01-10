@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="CompilerConfiguration">
+    <annotationProcessing>
+      <profile name="Maven default annotation processors profile" enabled="true">
+        <sourceOutputDir name="target/generated-sources/annotations" />
+        <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
+        <outputRelativeToContentRoot value="true" />
+        <module name="information-pioneer-common" />
+        <module name="information-pioneer-media" />
+        <module name="information-pioneer-admin" />
+        <module name="information-pioneer-admin-gateway" />
+        <module name="information-pioneer-article" />
+        <module name="information-pioneer-media-gateway" />
+        <module name="information-pioneer-app-gateway" />
+        <module name="information-pioneer-user" />
+      </profile>
+    </annotationProcessing>
+  </component>
+  <component name="JavacSettings">
+    <option name="ADDITIONAL_OPTIONS_OVERRIDE">
+      <module name="information-pioneer-admin" options="-parameters" />
+      <module name="information-pioneer-admin-gateway" options="-parameters" />
+      <module name="information-pioneer-app-gateway" options="-parameters" />
+      <module name="information-pioneer-article" options="-parameters" />
+      <module name="information-pioneer-backgroud" options="" />
+      <module name="information-pioneer-common" options="-parameters" />
+      <module name="information-pioneer-gateway" options="" />
+      <module name="information-pioneer-media" options="-parameters" />
+      <module name="information-pioneer-media-gateway" options="-parameters" />
+      <module name="information-pioneer-service" options="" />
+      <module name="information-pioneer-user" options="-parameters" />
+    </option>
+  </component>
+</project>

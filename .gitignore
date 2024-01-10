@@ -1,0 +1,9 @@
+# Project exclude paths
+/information-pioneer-common/target/
+/information-pioneer-gateway/information-pioneer-admin-gateway/target/
+/information-pioneer-gateway/information-pioneer-app-gateway/target/
+/information-pioneer-gateway/information-pioneer-media-gateway/target/
+/information-pioneer-service/information-pioneer-admin/target/
+/information-pioneer-service/information-pioneer-article/target/
+/information-pioneer-service/information-pioneer-media/target/
+/information-pioneer-service/information-pioneer-user/target/

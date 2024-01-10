@@ -1,0 +1,41 @@
+server:
+  port: 6001
+spring:
+  application:
+    name: information-pioneer-admin-gateway
+  cloud:
+    nacos:
+      discovery:
+        server-addr: 192.168.181.132:8848
+    gateway:
+      globalcors:
+        cors-configurations:
+          '[/**]': # 匹配所有请求
+            allowedOrigins: "*" #跨域处理 允许所有的域
+            allowedMethods: # 支持的方法
+              - GET
+              - POST
+              - PUT
+              - DELETE
+      routes:
+        # 平台管理
+        - id: admin
+          uri: lb://information-pioneer-admin
+          predicates:
+            - Path=/admin/**
+          filters:
+            - StripPrefix= 1
+        # 自媒体微服务
+        - id: media
+          uri: lb://information-pioneer-media
+          predicates:
+            - Path=/media/**
+          filters:
+            - StripPrefix= 1
+        # 用户微服务
+        - id: user
+          uri: lb://information-pioneer-user
+          predicates:
+            - Path=/user/**
+          filters:
+            - StripPrefix= 1
