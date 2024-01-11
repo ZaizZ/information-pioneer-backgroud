@@ -2,6 +2,9 @@ package pioneer.media.service.impl;
 
 import com.alibaba.fastjson.JSON;
 import org.apache.commons.lang.StringUtils;
+import org.redisson.api.RBlockingDeque;
+import org.redisson.api.RDelayedQueue;
+import org.redisson.api.RedissonClient;
 import org.springframework.scheduling.annotation.Async;
 import pioneer.common.aliyun.GreenImageScan;
 import pioneer.common.aliyun.GreenTextScan;
@@ -23,6 +26,7 @@ import org.springframework.stereotype.Service;
 
 import java.io.InputStream;
 import java.util.*;
+import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
 @Service
@@ -52,6 +56,9 @@ public class AuditServiceImpl implements IAuditService {
 
     @Autowired
     private IWmChannelService wmChannelService;
+
+    @Autowired
+    private RedissonClient redissonClient;
 
 
     @Override
@@ -85,8 +92,10 @@ public class AuditServiceImpl implements IAuditService {
     @Override
     public void audit(Integer id) {
         WmNews byId = wmNewsService.getById(id);
+        //审核敏感词
         boolean b = checkSensitive(byId);
         if (b){
+            //判断是否到了发布时间
             if (byId.getPublishTime().getTime()<=System.currentTimeMillis()) {
                 //远程调用新增app文章
                 Long articleId = this.createApArticle(byId);
@@ -96,9 +105,17 @@ public class AuditServiceImpl implements IAuditService {
                 byId.setSubmitedTime(new Date());
                 wmNewsService.updateById(byId);
             }else {
+                //未到达发布时间
                 byId.setStatus(8);
                 byId.setSubmitedTime(new Date());
                 wmNewsService.updateById(byId);
+
+                //向Redis去发送一个延迟的任务
+                RBlockingDeque<Object> blockingDeque = redissonClient.getBlockingDeque("publish-task");
+                RDelayedQueue<Object> delayedQueue = redissonClient.getDelayedQueue(blockingDeque);
+
+                long time = byId.getPublishTime().getTime()-System.currentTimeMillis();
+                delayedQueue.offer(byId.getId(),time, TimeUnit.MILLISECONDS);
             }
         }
     }
@@ -139,7 +156,7 @@ public class AuditServiceImpl implements IAuditService {
         wmNewsService.updateById(wmNews);
         return false;
     }
-    private Long createApArticle(WmNews wmNews) {
+    public Long createApArticle(WmNews wmNews) {
         ArticleDto articleDto = new ArticleDto();
         articleDto.setContent(wmNews.getContent());
         articleDto.setTitle(wmNews.getTitle());

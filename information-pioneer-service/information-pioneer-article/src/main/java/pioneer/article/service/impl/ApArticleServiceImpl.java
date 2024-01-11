@@ -15,6 +15,7 @@ import pioneer.article.service.IApArticleContentService;
 import pioneer.article.service.IApArticleService;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import org.springframework.stereotype.Service;
+import pioneer.article.task.CreateHtmlTask;
 import pioneer.common.dto.ResponseResult;
 import pioneer.common.enums.AppHttpCodeEnum;
 
@@ -29,6 +30,9 @@ public class ApArticleServiceImpl extends ServiceImpl<ApArticleMapper, ApArticle
 
     @Autowired
     private IApArticleContentService iApArticleContentService;
+
+    @Autowired
+    private CreateHtmlTask createHtmlTask;
     @Override
     public ResponseResult<Long> saveArticle(ArticleDto dto) {
 
@@ -45,6 +49,9 @@ public class ApArticleServiceImpl extends ServiceImpl<ApArticleMapper, ApArticle
             apArticleContent.setContent(dto.getContent());
             iApArticleContentService.save(apArticleContent);
 
+            //新增文章时生成静态页面放入minio中
+            createHtmlTask.createHtml(apArticle,dto.getContent());
+
             return ResponseResult.okResult(apArticle.getId());
         }else {
             ApArticle byId = this.getById(dto.getId());
@@ -59,6 +66,9 @@ public class ApArticleServiceImpl extends ServiceImpl<ApArticleMapper, ApArticle
                     .eq(ApArticleContent::getArticleId,dto.getId());
 
             iApArticleContentService.update(updateWrapper);
+
+            //修改文章时生成静态页面放入minio中
+            createHtmlTask.createHtml(apArticle,dto.getContent());
             return ResponseResult.okResult(apArticle.getId());
         }
     }

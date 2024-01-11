@@ -12,6 +12,8 @@ spring:
     nacos:
       discovery:
         server-addr: 192.168.181.132:8848
+  freemarker:
+    suffix: .ftl #freemarker默认模板文件后缀是.ftlh，我们可以改成.ftl
 
 mybatis-plus:
   configuration:
@@ -33,4 +35,10 @@ seata:
     vgroup-mapping:
       information-pioneer-article-group: default   # 与上面想对应，属于哪个seata集群
   data-source-proxy-mode: AT
+
+minio:
+  endpoint: http://192.168.181.132:9000
+  accessKey: minio
+  secretKey: minio123
+  bucketName: pioneer  #minio中的桶
 

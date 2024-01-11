@@ -7,4 +7,6 @@ public interface IAuditService {
 
     public void audit(WmNews news);
     public void audit(Integer id);
+
+    public Long createApArticle(WmNews wmNews);
 }

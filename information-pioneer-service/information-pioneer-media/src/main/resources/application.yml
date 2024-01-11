@@ -15,6 +15,14 @@ spring:
   servlet:
     multipart:
       max-file-size: 10MB #调整上传文件的大小
+
+  redis:
+    host: 192.168.181.132
+    redisson:
+      config:
+        clusterServersConfig:
+          nodeAddresses:
+            - "redis://192.168.181.132:6379"
 mybatis-plus:
   configuration:
     # sql输出到控制台,方便开发调试
