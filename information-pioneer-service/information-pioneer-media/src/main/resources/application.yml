@@ -23,6 +23,13 @@ spring:
         clusterServersConfig:
           nodeAddresses:
             - "redis://192.168.181.132:6379"
+
+  kafka:
+    bootstrap-servers: 127.0.0.1:9092
+    producer:
+      retries: 0
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: org.apache.kafka.common.serialization.StringSerializer
 mybatis-plus:
   configuration:
     # sql输出到控制台,方便开发调试
@@ -48,6 +55,9 @@ minio:
   accessKey: minio
   secretKey: minio123
   bucketName: pioneer  #minio中的桶
+
+topic:
+  upDownTopic: wm_news_up_down_topic
 
 
 

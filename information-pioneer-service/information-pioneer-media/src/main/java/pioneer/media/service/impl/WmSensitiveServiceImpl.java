@@ -4,9 +4,13 @@ import com.alibaba.excel.EasyExcel;
 import com.alibaba.excel.read.listener.PageReadListener;
 import com.alibaba.fastjson.JSON;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.multipart.MultipartFile;
+import pioneer.common.dto.PageResponseResult;
 import pioneer.common.dto.ResponseResult;
+import pioneer.common.enums.AppHttpCodeEnum;
+import pioneer.media.dto.SensitiveDto;
 import pioneer.media.entity.WmSensitive;
 import pioneer.media.mapper.WmSensitiveMapper;
 import pioneer.media.service.IWmSensitiveService;
@@ -63,5 +67,19 @@ public class WmSensitiveServiceImpl extends ServiceImpl<WmSensitiveMapper, WmSen
                     return list;
                 });
         return ResponseResult.okResult();
+    }
+
+    @Override
+    public ResponseResult listByName(SensitiveDto dto) {
+        if (dto == null){
+            return ResponseResult.errorResult(AppHttpCodeEnum.PARAM_INVALID);
+        }
+        LambdaQueryWrapper<WmSensitive> queryWrapper = new LambdaQueryWrapper<>();
+        queryWrapper.like(dto.getName()!=null,WmSensitive::getSensitives, dto.getName());
+
+        Page<WmSensitive> wmSensitivePage = new Page<>(dto.getPage(),dto.getSize());
+        Page<WmSensitive> sensitivePage = this.page(wmSensitivePage, queryWrapper);
+
+        return new PageResponseResult(dto.getPage(), dto.getSize(),sensitivePage.getTotal(),sensitivePage.getRecords());
     }
 }

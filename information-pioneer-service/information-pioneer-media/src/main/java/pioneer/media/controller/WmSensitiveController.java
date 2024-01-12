@@ -17,10 +17,12 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import org.springframework.web.multipart.MultipartFile;
 import pioneer.common.dto.ResponseResult;
+import pioneer.media.dto.SensitiveDto;
 import pioneer.media.entity.WmSensitive;
 import pioneer.media.service.IWmSensitiveService;
 
 import java.io.IOException;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -52,6 +54,22 @@ public class WmSensitiveController{
     @ApiOperation("导出敏感词")
     public ResponseResult download(HttpServletResponse response) throws Exception {
         return wmSensitiveService.download(response);
+    }
+
+    @PostMapping("/list")
+    @ApiOperation("查询敏感词")
+    public ResponseResult listByName(@RequestBody SensitiveDto dto)  {
+        return wmSensitiveService.listByName(dto);
+    }
+
+    @PostMapping
+    @ApiOperation("新增敏感词")
+    public ResponseResult saveSensitive(@RequestBody Map<String, String>  map)  {
+        WmSensitive wmSensitive = new WmSensitive();
+        wmSensitive.setSensitives(map.get("sensitives"));
+        wmSensitive.setCreatedTime(new Date());
+        wmSensitiveService.save(wmSensitive);
+        return ResponseResult.okResult();
     }
 
 }

@@ -119,6 +119,12 @@
             <artifactId>spring-boot-starter-json</artifactId>
             <scope>compile</scope>
         </dependency>
+
+        <!-- kafkfa -->
+        <dependency>
+            <groupId>org.springframework.kafka</groupId>
+            <artifactId>spring-kafka</artifactId>
+        </dependency>
     </dependencies>
 
 </project>

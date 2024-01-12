@@ -14,6 +14,12 @@ spring:
         server-addr: 192.168.181.132:8848
   freemarker:
     suffix: .ftl #freemarker默认模板文件后缀是.ftlh，我们可以改成.ftl
+  kafka:
+    bootstrap-servers: 127.0.0.1:9092
+    consumer: #消费者
+      group-id: ${spring.application.name}-kafka-group  #这个一定不要忘了啊
+      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      value-deserializer: org.apache.kafka.common.serialization.StringDeserializer
 
 mybatis-plus:
   configuration:
@@ -41,4 +47,7 @@ minio:
   accessKey: minio
   secretKey: minio123
   bucketName: pioneer  #minio中的桶
+
+topic:
+  upDownTopic: wm_news_up_down_topic
 

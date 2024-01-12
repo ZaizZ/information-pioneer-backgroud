@@ -23,7 +23,7 @@
       <module name="information-pioneer-admin-gateway" options="-parameters" />
       <module name="information-pioneer-app-gateway" options="-parameters" />
       <module name="information-pioneer-article" options="-parameters" />
-      <module name="information-pioneer-backgroud" options="" />
+      <module name="information-pioneer-backgroud" options="-parameters" />
       <module name="information-pioneer-common" options="-parameters" />
       <module name="information-pioneer-gateway" options="" />
       <module name="information-pioneer-media" options="-parameters" />

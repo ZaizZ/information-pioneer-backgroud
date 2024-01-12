@@ -3,6 +3,7 @@ package pioneer.media.service.impl;
 import com.alibaba.fastjson.JSON;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import io.seata.spring.annotation.GlobalTransactional;
 import lombok.extern.slf4j.Slf4j;
@@ -10,7 +11,9 @@ import org.apache.commons.lang.StringUtils;
 import org.checkerframework.checker.units.qual.A;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Lazy;
+import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.scheduling.annotation.Async;
 import pioneer.common.dto.PageResponseResult;
 import pioneer.common.dto.ResponseResult;
@@ -51,6 +54,12 @@ public class WmNewsServiceImpl extends ServiceImpl<WmNewsMapper, WmNews> impleme
 
     @Autowired
     private IWmSensitiveService wmSensitiveService;
+
+    @Autowired
+    private KafkaTemplate kafkaTemplate;;
+
+    @Value("${topic.upDownTopic}")
+    private String topic;
 
     @Autowired
     private ArticleFeign articleFeign;
@@ -149,6 +158,87 @@ public class WmNewsServiceImpl extends ServiceImpl<WmNewsMapper, WmNews> impleme
             auditService.audit(wmNews.getId());
 
         }
+
+        return ResponseResult.okResult();
+    }
+
+    @Override
+    public ResponseResult<List<WmNews>> findPageByName(NewsAuthDto dto) {
+        if (dto == null){
+            return ResponseResult.errorResult(AppHttpCodeEnum.PARAM_INVALID);
+        }
+
+        LambdaQueryWrapper<WmNews> queryWrapper = new LambdaQueryWrapper<>();
+        queryWrapper.eq(dto.getStatus()!=null, WmNews::getStatus, dto.getStatus());
+        queryWrapper.like(dto.getTitle()!=null,WmNews::getTitle, dto.getTitle());
+        queryWrapper.orderByDesc(WmNews::getPublishTime);
+
+        Page<WmNews> wmNewsPage = new Page<>(dto.getPage(),dto.getSize());
+        Page<WmNews> newsPage = this.page(wmNewsPage, queryWrapper);
+
+        return new PageResponseResult<>(dto.getPage(),dto.getSize(),newsPage.getTotal(),newsPage.getRecords());
+    }
+
+    @Override
+    public ResponseResult findNewsVoById(Integer id) {
+        WmNews wmNews = this.getById(id);
+        if (wmNews != null) {
+            WmNewsVo wmNewsVo = new WmNewsVo();
+            BeanUtils.copyProperties(wmNews, wmNewsVo);
+            WmUser wmUser = wmUserService.getById(wmNews.getUserId());
+            if (wmUser != null){
+                wmNewsVo.setAuthorName(wmUser.getName());
+            }
+            return ResponseResult.okResult(wmNewsVo);
+        }
+        return ResponseResult.errorResult(AppHttpCodeEnum.DATA_NOT_EXIST);
+    }
+
+    @Override
+    @GlobalTransactional
+    public ResponseResult auth(NewsAuthDto dto, int type) {
+        if (dto == null){
+            return ResponseResult.errorResult(AppHttpCodeEnum.PARAM_INVALID);
+        }
+        WmNews wmNews = this.getById(dto.getId());
+        if (wmNews == null){
+            return ResponseResult.errorResult(AppHttpCodeEnum.DATA_NOT_EXIST);
+        }
+        if (type == 1){
+            //审核成功 插入app文章，修改自媒体人文章状态状态
+            Long apArticleId = auditService.createApArticle(wmNews);
+            wmNews.setStatus(9);
+            wmNews.setArticleId(apArticleId);
+            this.updateById(wmNews);
+        }else {
+
+            wmNews.setStatus(2);
+            wmNews.setReason(dto.getMsg());
+            this.updateById(wmNews);
+        }
+        return ResponseResult.okResult();
+    }
+
+    @Override
+    public ResponseResult downOrUp(WmNewsDto dto) {
+        User user = UserThreadLocalUtil.get();
+        if (user == null){
+            return ResponseResult.errorResult(AppHttpCodeEnum.NEED_LOGIN);
+        }
+        Integer id = dto.getId();
+        WmNews wmNews = this.getById(id);
+        if (wmNews == null){
+            return ResponseResult.errorResult(AppHttpCodeEnum.DATA_NOT_EXIST);
+        }
+        //上架状态 1 上架 0 下架
+        wmNews.setEnable(dto.getEnable()==1); //true--1 false---0
+        this.updateById(wmNews);
+
+        //向kafka发送数据，通知app端上下架文章
+        HashMap map = new HashMap<>();
+        map.put("articleId",wmNews.getArticleId());
+        map.put("isDown",dto.getEnable()==0); //表设计有问题，app文章表是 下架状态 1 下架 0 上架
+        kafkaTemplate.send(topic,  JSON.toJSONString(map));
 
         return ResponseResult.okResult();
     }
