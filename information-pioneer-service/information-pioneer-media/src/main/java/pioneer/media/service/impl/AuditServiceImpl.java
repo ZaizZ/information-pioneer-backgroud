@@ -91,31 +91,31 @@ public class AuditServiceImpl implements IAuditService {
     }
     @Override
     public void audit(Integer id) {
-        WmNews byId = wmNewsService.getById(id);
+        WmNews wmNews = wmNewsService.getById(id);
         //审核敏感词
-        boolean b = checkSensitive(byId);
+        boolean b = checkSensitive(wmNews);
         if (b){
             //判断是否到了发布时间
-            if (byId.getPublishTime().getTime()<=System.currentTimeMillis()) {
+            if (wmNews.getPublishTime().getTime()<=System.currentTimeMillis()) {
                 //远程调用新增app文章
-                Long articleId = this.createApArticle(byId);
+                Long articleId = this.createApArticle(wmNews);
                 //审核通过，已经发布到App了
-                byId.setArticleId(articleId);
-                byId.setStatus(9);
-                byId.setSubmitedTime(new Date());
-                wmNewsService.updateById(byId);
+                wmNews.setArticleId(articleId);
+                wmNews.setStatus(9);
+                wmNews.setSubmitedTime(new Date());
+                wmNewsService.updateById(wmNews);
             }else {
                 //未到达发布时间
-                byId.setStatus(8);
-                byId.setSubmitedTime(new Date());
-                wmNewsService.updateById(byId);
+                wmNews.setStatus(8);
+                wmNews.setSubmitedTime(new Date());
+                wmNewsService.updateById(wmNews);
 
                 //向Redis去发送一个延迟的任务
                 RBlockingDeque<Object> blockingDeque = redissonClient.getBlockingDeque("publish-task");
                 RDelayedQueue<Object> delayedQueue = redissonClient.getDelayedQueue(blockingDeque);
-
-                long time = byId.getPublishTime().getTime()-System.currentTimeMillis();
-                delayedQueue.offer(byId.getId(),time, TimeUnit.MILLISECONDS);
+                //指定多少秒后才发送
+                long time = wmNews.getPublishTime().getTime()-System.currentTimeMillis();
+                delayedQueue.offer(wmNews.getId(),time, TimeUnit.MILLISECONDS);
             }
         }
     }
@@ -183,7 +183,9 @@ public class AuditServiceImpl implements IAuditService {
         articleDto.setImages(imagesStr);
 
         articleDto.setLabels(wmNews.getLabels());
-        articleDto.setPublishTime(wmNews.getPublishTime()); //TODO
+        articleDto.setPublishTime(wmNews.getPublishTime());
+        articleDto.setId(wmNews.getArticleId());
+
 
         ResponseResult<Long> responseResult = articleFeign.saveArticle(articleDto);
         if (responseResult.getCode()!=0){
@@ -211,6 +213,7 @@ public class AuditServiceImpl implements IAuditService {
 //        {"id":264,"url":"http://192.168.85.143:9000/heima/4e342011-dd0c-4a5b-8005-ad065ab43056.jpeg"}]
         List<ImageDto> imageDtoList = JSON.parseArray(images, ImageDto.class);
         for (ImageDto imageDto : imageDtoList) {
+            //去重
             if(!allUrlList.contains(imageDto.getUrl())){
                 allUrlList.add(imageDto.getUrl());
             }

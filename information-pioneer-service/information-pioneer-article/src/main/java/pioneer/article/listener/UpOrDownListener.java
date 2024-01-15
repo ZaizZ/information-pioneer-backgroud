@@ -21,7 +21,6 @@ public class UpOrDownListener {
 
     @KafkaListener(topics = "${topic.upDownTopic}")
     public void receiveMsg(ConsumerRecord<String,String> msg){
-        log.error("--------------------------------------------");
         String value = msg.value();
         if (StringUtils.isNotBlank(value)) {
 

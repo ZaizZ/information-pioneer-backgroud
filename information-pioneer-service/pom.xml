@@ -17,6 +17,8 @@
         <module>information-pioneer-admin</module>
         <module>information-pioneer-user</module>
         <module>information-pioneer-article</module>
+        <module>information-pioneer-comment</module>
+        <module>information-pioneer-behavior</module>
     </modules>
 
     <dependencies>

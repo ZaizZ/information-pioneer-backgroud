@@ -58,7 +58,7 @@ public class ApArticleServiceImpl extends ServiceImpl<ApArticleMapper, ApArticle
             if (byId==null){
                 return ResponseResult.errorResult(AppHttpCodeEnum.DATA_NOT_EXIST);
             }
-
+            apArticle.setIsDown(false); //把状态设置为上架
             this.updateById(apArticle);
 
             LambdaUpdateWrapper<ApArticleContent> updateWrapper = new LambdaUpdateWrapper<>();
@@ -111,7 +111,7 @@ public class ApArticleServiceImpl extends ServiceImpl<ApArticleMapper, ApArticle
 
         //查询两个表的数据
         ApArticle apArticle = this.getById(dto.getArticleId());
-        if (apArticle == null) {
+        if (apArticle == null || apArticle.getIsDown() == true || apArticle.getIsDelete() == true) {
             return ResponseResult.errorResult(AppHttpCodeEnum.DATA_NOT_EXIST);
         }
         LambdaQueryWrapper<ApArticleContent> queryWrapper = new LambdaQueryWrapper<>();

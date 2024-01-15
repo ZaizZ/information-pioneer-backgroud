@@ -17,7 +17,7 @@ spring:
   kafka:
     bootstrap-servers: 127.0.0.1:9092
     consumer: #消费者
-      group-id: ${spring.application.name}-kafka-group  #这个一定不要忘了啊
+      group-id: ${spring.application.name}-kafka-group  #消费者组
       key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
       value-deserializer: org.apache.kafka.common.serialization.StringDeserializer
 
@@ -50,4 +50,7 @@ minio:
 
 topic:
   upDownTopic: wm_news_up_down_topic
+  articleLikes: article_likes
+  comment: article_comment
+  articleCollections: article_collections
 

@@ -9,6 +9,6 @@ import pioneer.media.interceptor.UserInterceptor;
 public class MvcConfig implements WebMvcConfigurer {
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
-        registry.addInterceptor(new UserInterceptor());
+        registry.addInterceptor(new UserInterceptor()).addPathPatterns("/**");
     }
 }

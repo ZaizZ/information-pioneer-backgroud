@@ -14,12 +14,14 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import pioneer.article.dto.ArticleDto;
 import pioneer.article.dto.ArticleHomeDto;
 import pioneer.article.dto.ArticleInfoDto;
+import pioneer.article.entity.ApArticle;
 import pioneer.article.service.IApArticleService;
 import java.util.List;
 import java.util.Map;
 
 import org.springframework.web.bind.annotation.RestController;
 import pioneer.common.dto.ResponseResult;
+import pioneer.common.enums.AppHttpCodeEnum;
 
 /**
  * 文章信息表，存储已发布的文章 前端控制器
@@ -61,6 +63,16 @@ public class ApArticleController{
     @ApiOperation("根据id查询文章")
     public ResponseResult loadArticleInfo(@RequestBody ArticleInfoDto dto){
         return apArticleService.loadArticleInfo(dto);
-
     }
+
+    @GetMapping("/load_by_id/{id}")
+    @ApiOperation("根据id查询文章（给评论微服务远程调用）")
+    public ResponseResult<ApArticle> loadById(@PathVariable("id") Long articleId){
+        if (articleId == null){
+            return ResponseResult.errorResult(AppHttpCodeEnum.PARAM_REQUIRE);
+        }
+        ApArticle apArticle = apArticleService.getById(articleId);
+        return ResponseResult.okResult(apArticle);
+    }
+
 }

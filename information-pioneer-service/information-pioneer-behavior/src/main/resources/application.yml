@@ -1,0 +1,36 @@
+server:
+  port: 9005
+spring:
+  application:
+    name: information-pioneer-behavior
+  datasource:
+    driver-class-name: com.mysql.jdbc.Driver
+    url: jdbc:mysql://192.168.181.132:3306/information_pioneer_behavior?useUnicode=true&characterEncoding=UTF-8&serverTimezone=UTC&useSSL=false
+    username: root
+    password: root
+  cloud:
+    nacos:
+      discovery:
+        server-addr: 192.168.181.132:8848
+  kafka:
+    bootstrap-servers: 127.0.0.1:9092
+    producer:
+      retries: 0
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: org.apache.kafka.common.serialization.StringSerializer
+  redis:
+    host: 192.168.181.132
+
+  data:
+    mongodb:
+      host: 192.168.181.132
+      port: 27017
+      database: zxxf_behavior
+mybatis-plus:
+  configuration:
+    # sql输出到控制台,方便开发调试
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+
+topic:
+  articleLikes: article_likes
+  articleCollections: article_collections

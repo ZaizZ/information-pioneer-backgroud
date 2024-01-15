@@ -2,17 +2,20 @@
 <project version="4">
   <component name="CompilerConfiguration">
     <annotationProcessing>
+      <profile default="true" name="Default" enabled="true" />
       <profile name="Maven default annotation processors profile" enabled="true">
         <sourceOutputDir name="target/generated-sources/annotations" />
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
         <module name="information-pioneer-common" />
+        <module name="information-pioneer-behavior" />
         <module name="information-pioneer-media" />
         <module name="information-pioneer-admin" />
         <module name="information-pioneer-admin-gateway" />
         <module name="information-pioneer-article" />
         <module name="information-pioneer-media-gateway" />
         <module name="information-pioneer-app-gateway" />
+        <module name="information-pioneer-comment" />
         <module name="information-pioneer-user" />
       </profile>
     </annotationProcessing>
@@ -23,12 +26,14 @@
       <module name="information-pioneer-admin-gateway" options="-parameters" />
       <module name="information-pioneer-app-gateway" options="-parameters" />
       <module name="information-pioneer-article" options="-parameters" />
-      <module name="information-pioneer-backgroud" options="-parameters" />
+      <module name="information-pioneer-backgroud" options="" />
+      <module name="information-pioneer-behavior" options="-parameters" />
+      <module name="information-pioneer-comment" options="-parameters" />
       <module name="information-pioneer-common" options="-parameters" />
       <module name="information-pioneer-gateway" options="" />
       <module name="information-pioneer-media" options="-parameters" />
       <module name="information-pioneer-media-gateway" options="-parameters" />
-      <module name="information-pioneer-service" options="" />
+      <module name="information-pioneer-service" options="-parameters" />
       <module name="information-pioneer-user" options="-parameters" />
     </option>
   </component>

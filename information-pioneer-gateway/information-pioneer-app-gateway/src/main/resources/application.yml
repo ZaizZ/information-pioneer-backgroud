@@ -32,3 +32,18 @@ spring:
             - Path=/article/**
           filters:
             - StripPrefix= 1
+        # 评论微服务
+        - id: comment
+          uri: lb://information-pioneer-comment
+          predicates:
+            - Path=/comment/**
+          filters:
+            - StripPrefix= 1
+        # 用户行为微服务
+        - id: behavior
+          uri: lb://information-pioneer-behavior
+          predicates:
+            - Path=/behavior/**
+          filters:
+            - StripPrefix= 1
+

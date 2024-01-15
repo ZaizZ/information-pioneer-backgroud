@@ -15,7 +15,7 @@ public class UserInterceptor implements HandlerInterceptor {
         //获取请求头中的用户信息
         String userId = request.getHeader("userId");
         String name = request.getHeader("name");
-        if (StringUtils.isNotBlank(userId)){
+        if (StringUtils.isNotBlank(userId) && Integer.parseInt(userId)!=0){
             User user = new User(Integer.parseInt(userId), name);
             //放入ThreadLocal中
             UserThreadLocalUtil.set(user);
