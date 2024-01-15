@@ -1,0 +1,26 @@
+server:
+  port: 9007
+spring:
+  application:
+    name: information-pioneer-comment
+  cloud:
+    nacos:
+      discovery:
+        server-addr: http://192.168.181.132:8848
+  data:
+    mongodb:
+      host: 192.168.181.132
+      port: 27017
+      database: zxxf_comment
+  redis:
+    host: 192.168.181.132
+
+  kafka:
+    bootstrap-servers: 127.0.0.1:9092
+    producer:
+      retries: 0
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: org.apache.kafka.common.serialization.StringSerializer
+
+topic:
+  comment: article_comment
