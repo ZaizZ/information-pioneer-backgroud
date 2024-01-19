@@ -72,4 +72,18 @@ public class WmSensitiveController{
         return ResponseResult.okResult();
     }
 
+    @PutMapping
+    @ApiOperation("修改敏感词")
+    public ResponseResult updateSensitive(@RequestBody WmSensitive  ws)  {
+        wmSensitiveService.updateById(ws);
+        return ResponseResult.okResult();
+    }
+
+    @DeleteMapping("/{id}")
+    @ApiOperation("删除敏感词")
+    public ResponseResult updateSensitive(@PathVariable Integer  id)  {
+        wmSensitiveService.removeById(id);
+        return ResponseResult.okResult();
+    }
+
 }

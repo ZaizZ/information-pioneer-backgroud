@@ -35,4 +35,22 @@ public class WmMaterialController{
     public ResponseResult listByStatus(@RequestBody WmMaterialDto dto){
         return wmMaterialService.listByStatus(dto);
     }
+
+    @PutMapping("/collect/{id}")
+    @ApiOperation("收藏文章")
+    public ResponseResult collection(@PathVariable Integer id){
+        return wmMaterialService.collection(id,1);
+    }
+
+    @PutMapping("/cancel_collect/{id}")
+    @ApiOperation("取消收藏文章")
+    public ResponseResult cancelCollection(@PathVariable Integer id){
+        return wmMaterialService.collection(id,2);
+    }
+
+    @DeleteMapping("/{id}")
+    @ApiOperation("删除素材")
+    public ResponseResult deleteMaterial(@PathVariable Integer id){
+        return wmMaterialService.deleteMaterial(id);
+    }
 }

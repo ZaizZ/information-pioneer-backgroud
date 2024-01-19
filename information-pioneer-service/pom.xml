@@ -19,6 +19,7 @@
         <module>information-pioneer-article</module>
         <module>information-pioneer-comment</module>
         <module>information-pioneer-behavior</module>
+        <module>information-pioneer-search</module>
     </modules>
 
     <dependencies>

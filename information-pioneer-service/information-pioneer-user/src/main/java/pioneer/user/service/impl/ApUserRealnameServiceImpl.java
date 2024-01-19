@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import io.seata.spring.annotation.GlobalTransactional;
+import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import pioneer.common.dto.PageResponseResult;
 import pioneer.common.dto.ResponseResult;
@@ -47,7 +48,7 @@ public class ApUserRealnameServiceImpl extends ServiceImpl<ApUserRealnameMapper,
         queryWrapper.eq(dto.getStatus()!=null,ApUserRealname::getStatus,dto.getStatus());
 
         IPage<ApUserRealname> page = new Page<>(dto.getPage(), dto.getSize());
-        IPage<ApUserRealname> result = this.page(page);
+        IPage<ApUserRealname> result = this.page(page,queryWrapper);
 
         return new PageResponseResult(dto.getPage(),dto.getSize(),page.getTotal(),result.getRecords());
     }
@@ -66,7 +67,11 @@ public class ApUserRealnameServiceImpl extends ServiceImpl<ApUserRealnameMapper,
         //驳回
         if (flag == 0){
             one.setStatus(2);
-            one.setReason(dto.getMsg());
+            if(StringUtils.isNotBlank(dto.getMsg())){
+                one.setReason(dto.getMsg());
+            }else{
+                one.setReason(dto.getReason());
+            }
             one.setUpdatedTime(new Date());
             this.updateById(one);
         }else{

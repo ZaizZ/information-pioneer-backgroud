@@ -15,10 +15,7 @@ import pioneer.media.client.ArticleFeign;
 import pioneer.media.dto.ArticleDto;
 import pioneer.media.dto.ContentDto;
 import pioneer.media.dto.ImageDto;
-import pioneer.media.entity.WmChannel;
-import pioneer.media.entity.WmNews;
-import pioneer.media.entity.WmSensitive;
-import pioneer.media.entity.WmUser;
+import pioneer.media.entity.*;
 import pioneer.media.service.*;
 import org.apache.commons.io.IOUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -104,6 +101,7 @@ public class AuditServiceImpl implements IAuditService {
                 wmNews.setStatus(9);
                 wmNews.setSubmitedTime(new Date());
                 wmNewsService.updateById(wmNews);
+
             }else {
                 //未到达发布时间
                 wmNews.setStatus(8);

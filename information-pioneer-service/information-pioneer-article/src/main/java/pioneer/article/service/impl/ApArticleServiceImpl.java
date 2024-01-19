@@ -10,6 +10,8 @@ import pioneer.article.dto.ArticleHomeDto;
 import pioneer.article.dto.ArticleInfoDto;
 import pioneer.article.entity.ApArticle;
 import pioneer.article.entity.ApArticleContent;
+import pioneer.article.entity.ApArticleSearch;
+import pioneer.article.es.ArticleRepository;
 import pioneer.article.mapper.ApArticleMapper;
 import pioneer.article.service.IApArticleContentService;
 import pioneer.article.service.IApArticleService;
@@ -33,6 +35,9 @@ public class ApArticleServiceImpl extends ServiceImpl<ApArticleMapper, ApArticle
 
     @Autowired
     private CreateHtmlTask createHtmlTask;
+
+    @Autowired
+    private ArticleRepository articleRepository;
     @Override
     public ResponseResult<Long> saveArticle(ArticleDto dto) {
 
@@ -51,6 +56,10 @@ public class ApArticleServiceImpl extends ServiceImpl<ApArticleMapper, ApArticle
 
             //新增文章时生成静态页面放入minio中
             createHtmlTask.createHtml(apArticle,dto.getContent());
+            //添加到es中
+            ApArticleSearch apArticleSearch = new ApArticleSearch();
+            BeanUtils.copyProperties(apArticle, apArticleSearch);
+            articleRepository.save(apArticleSearch);
 
             return ResponseResult.okResult(apArticle.getId());
         }else {

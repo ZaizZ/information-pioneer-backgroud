@@ -52,4 +52,20 @@ public class WmChannelController {
         return wmChannelService.selectChannels();
     }
 
+    @PutMapping()
+    @ApiOperation("修改频道")
+    public ResponseResult updateChannels(@RequestBody WmChannel entity){
+         wmChannelService.updateById(entity);
+         return ResponseResult.okResult();
+    }
+
+    @DeleteMapping("/{id}")
+    @ApiOperation("删除频道")
+    public ResponseResult updateChannels(@PathVariable Integer id){
+        wmChannelService.removeById(id);
+        return ResponseResult.okResult();
+    }
+
+
+
 }

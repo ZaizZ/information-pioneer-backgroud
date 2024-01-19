@@ -70,7 +70,9 @@ public class WmChannelServiceImpl extends ServiceImpl<WmChannelMapper, WmChannel
 
     @Override
     public ResponseResult selectChannels() {
-        List<WmChannel> list = this.list();
+        LambdaQueryWrapper<WmChannel> queryWrapper = new LambdaQueryWrapper<>();
+        queryWrapper.eq(WmChannel::getStatus,true);
+        List<WmChannel> list = this.list(queryWrapper);
         return ResponseResult.okResult(list);
     }
 }

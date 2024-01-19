@@ -21,6 +21,10 @@ spring:
       key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
       value-deserializer: org.apache.kafka.common.serialization.StringDeserializer
 
+  elasticsearch:
+    rest:
+      uris: http://192.168.181.132:9200
+
 mybatis-plus:
   configuration:
     # sql输出到控制台,方便开发调试

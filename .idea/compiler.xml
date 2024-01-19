@@ -8,6 +8,7 @@
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
         <module name="information-pioneer-common" />
+        <module name="information-pioneer-search" />
         <module name="information-pioneer-behavior" />
         <module name="information-pioneer-media" />
         <module name="information-pioneer-admin" />
@@ -33,6 +34,7 @@
       <module name="information-pioneer-gateway" options="" />
       <module name="information-pioneer-media" options="-parameters" />
       <module name="information-pioneer-media-gateway" options="-parameters" />
+      <module name="information-pioneer-search" options="-parameters" />
       <module name="information-pioneer-service" options="-parameters" />
       <module name="information-pioneer-user" options="-parameters" />
     </option>

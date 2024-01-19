@@ -12,10 +12,12 @@ import pioneer.common.minio.MinIOService;
 import pioneer.common.util.UserThreadLocalUtil;
 import pioneer.media.dto.WmMaterialDto;
 import pioneer.media.entity.WmMaterial;
+import pioneer.media.entity.WmNewsMaterial;
 import pioneer.media.mapper.WmMaterialMapper;
 import pioneer.media.service.IWmMaterialService;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import org.springframework.stereotype.Service;
+import pioneer.media.service.IWmNewsMaterialService;
 
 import java.util.Date;
 
@@ -26,6 +28,8 @@ import java.util.Date;
 public class WmMaterialServiceImpl extends ServiceImpl<WmMaterialMapper, WmMaterial> implements IWmMaterialService {
     @Autowired
     private MinIOService minIOService;
+    @Autowired
+    private IWmNewsMaterialService wmNewsMaterialService;
     @Override
     public ResponseResult<WmMaterial> saveWmMaterial(MultipartFile file) {
         //上传图片
@@ -67,5 +71,46 @@ public class WmMaterialServiceImpl extends ServiceImpl<WmMaterialMapper, WmMater
         Page<WmMaterial> result = this.page(page, queryWrapper);
 
         return new PageResponseResult(dto.getPage(), dto.getSize(), result.getTotal(),result.getRecords());
+    }
+
+    @Override
+    public ResponseResult collection(Integer id, int type) {
+        WmMaterial wmMaterial = this.getById(id);
+
+        User user = UserThreadLocalUtil.get();
+        if (user == null){
+            return ResponseResult.errorResult(AppHttpCodeEnum.NEED_LOGIN);
+        }
+
+        if (wmMaterial == null){
+            return ResponseResult.errorResult(AppHttpCodeEnum.DATA_NOT_EXIST);
+        }
+        //收藏文章
+        if (type == 1){
+            wmMaterial.setIsCollection(true);
+        }else {
+            wmMaterial.setIsCollection(false);
+        }
+
+        this.updateById(wmMaterial);
+
+        return ResponseResult.okResult();
+    }
+
+    @Override
+    public ResponseResult deleteMaterial(Integer id) {
+        User user = UserThreadLocalUtil.get();
+        if (user == null){
+            return ResponseResult.errorResult(AppHttpCodeEnum.NEED_LOGIN);
+        }
+        LambdaQueryWrapper<WmNewsMaterial> queryWrapper = new LambdaQueryWrapper<>();
+        queryWrapper.eq(WmNewsMaterial::getMaterialId,id);
+
+        //删除文章的引用
+        wmNewsMaterialService.remove(queryWrapper);
+
+        this.removeById(id);
+
+        return ResponseResult.okResult();
     }
 }

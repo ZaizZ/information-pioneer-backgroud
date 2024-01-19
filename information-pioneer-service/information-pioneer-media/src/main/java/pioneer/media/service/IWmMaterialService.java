@@ -14,4 +14,8 @@ public interface IWmMaterialService extends IService<WmMaterial> {
     ResponseResult<WmMaterial> saveWmMaterial(MultipartFile file);
 
     ResponseResult listByStatus(WmMaterialDto dto);
+
+    ResponseResult collection(Integer id, int type);
+
+    ResponseResult deleteMaterial(Integer id);
 }

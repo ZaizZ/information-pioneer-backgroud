@@ -1,0 +1,18 @@
+server:
+  port: 9009
+spring:
+  application:
+    name: information-pioneer-search
+  cloud:
+    nacos:
+      discovery:
+        server-addr: 192.168.181.132:8848
+  elasticsearch:
+    rest:
+      uris: http://192.168.181.132:9200
+
+  data:
+    mongodb:
+      host: 192.168.181.132
+      port: 27017
+      database: zxxf_history

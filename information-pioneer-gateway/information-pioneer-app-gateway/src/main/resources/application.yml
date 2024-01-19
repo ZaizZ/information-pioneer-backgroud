@@ -46,4 +46,11 @@ spring:
             - Path=/behavior/**
           filters:
             - StripPrefix= 1
+        # 搜索微服务
+        - id: search
+          uri: lb://information-pioneer-search
+          predicates:
+            - Path=/search/**
+          filters:
+            - StripPrefix= 1
 

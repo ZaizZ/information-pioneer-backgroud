@@ -14,4 +14,5 @@ public class AuthDto extends PageRequestDto {
 
     private Integer id;
     private String msg;
+    private String reason;
 }
